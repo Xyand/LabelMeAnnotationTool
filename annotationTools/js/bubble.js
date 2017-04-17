@@ -204,10 +204,14 @@ function GetPopupFormDraw(scribble_form) {
     html_str = "<b>Enter part name</b><br />";
     part_bubble = true;
   }
-  html_str += HTMLobjectBox("");
+
+  if (!window.last_object)
+    last_object = "";
+
+  html_str += HTMLobjectBox(last_object);
   
   if(use_attributes) {
-    html_str += HTMLoccludedBox("");
+    html_str += HTMLoccludedBox(last_object);
     html_str += "<b>Enter attributes</b><br />";
     html_str += HTMLattributesBox("");
   }
@@ -291,8 +295,9 @@ function GetPopupFormEdit(anno) {
 // Shows the box to enter the object name
 function HTMLobjectBox(obj_name) {
   var html_str="";
-  
-  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:220px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
+ 
+
+  html_str += '<input disabled="true" name="objEnter" id="objEnter" type="text" style="width:220px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
   
   html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13){';
   //html_str += 'console.log($(".ui-autocomplete.ui-widget:visible").length);';
@@ -322,7 +327,19 @@ function HTMLobjectBox(obj_name) {
   }
   
   html_str += '<br />';
-  
+ 
+  // Object type select menu
+  html_str += '<select id="objectselect" onchange="last_object=$(\'#objectselect\').val(); $(\'#objEnter\').val(last_object);">';
+  html_str +=  '<option value=""></option>';
+  for (var i = 0 ; i < object_choices.length; i++) {
+    var val = object_choices[i];
+    var selected = (val == obj_name) ? 'selected="selected"' : '';
+    //var selected = ""
+    html_str +=  '<option value="' + val + '" ' + selected + '>' + val + '</option>';
+  }
+  html_str += '</select>'
+
+  html_str += '<br />';
   return html_str;
 }
 
