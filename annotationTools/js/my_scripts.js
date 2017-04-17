@@ -84,7 +84,13 @@ function ShowNextImage() {
   if (video_mode) main_media.GetFileInfo().SetURL(document.URL);
   else {
     main_media.GetFileInfo().FetchImage();
-    LoadNewMedia();
+
+    var url_new = document.URL;
+    url_new = url_new.replace(/folder=[^&]*/i, 'folder='+main_media.GetFileInfo().GetDirName());
+    url_new = url_new.replace(/image=[^&]*/i, 'image='+main_media.GetFileInfo().GetImName());
+    
+    window.location = url_new;
+    //LoadNewMedia();
   }
 }
 
